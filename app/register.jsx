@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Text, TextInput, TouchableOpacity, View, Alert } from "react-native";
-import { auth, db, app } from "../firebaseConfig";
+import { auth, db } from "../firebaseConfig";
 import { createUserWithEmailAndPassword } from "firebase/auth";
 import { collection, addDoc } from "firebase/firestore";
 import { useRouter } from "expo-router";
@@ -8,29 +8,62 @@ import { doc, setDoc } from "firebase/firestore";
 
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
-import { getFirestore } from "firebase/firestore";
-import firestore from '@react-native-firebase/firestore';
-
-
-
 export default function Register() {
+  const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
   const router = useRouter();
 
+  const checkPasswords = (password, confirmPassword) => {
+    if (password !== confirmPassword) {
+      return false;
+    }
+
+    if (password.length < 8) {
+      Alert.alert("Error", "Password must be at least 8 characters long.");
+      return false;
+    }
+
+    const hasCapitalLetter = /[A-Z]/.test(password);
+    const hasNumber = /[0-9]/.test(password);
+    const hasSpecialCharacter = /[!@#$%^&*()_+\-=[\]{};':"\\|,.<>/?]/.test(password);
+
+    if (!hasCapitalLetter) {
+      Alert.alert("Error", "Password must contain at least one capital letter.");
+      return false;
+    }
+
+    if (!hasNumber) {
+      Alert.alert("Error", "Password must contain at least one number.");
+      return false;
+    }
+
+    if (!hasSpecialCharacter) {
+      Alert.alert("Error", "Password must contain at least one special character.");
+      return false;
+    }
+
+    return true;
+  };
+
   const handleRegister = async () => {
+
+    if (!checkPasswords(password, confirmPassword)) {
+      return;
+    }
+
     try {
       const userCredential = await createUserWithEmailAndPassword(auth, email, password);
       const user = userCredential.user;
 
-      
-      
+      const docRef = doc(collection(db, "users"), userDoc, user.uid);
+      await setDoc(docRef, {
+        name: name,
+        email: email,
+        createdAt: Timestam.now()
+      })
 
-       
-       const userDoc = { email: email }; 
-       await addDoc(collection(db, "users"), userDoc); 
-
-      
       try {
         await AsyncStorage.setItem("user", JSON.stringify(userDoc));
         console.log("User data stored locally:", userDoc);
@@ -38,7 +71,7 @@ export default function Register() {
         router.push({ pathname: "/profile", params: { userData: userDoc } });
       } catch (storageError) {
         console.error("Error storing user data locally:", storageError);
-        
+
       }
       Alert.alert("Registration Successful");
 
@@ -61,36 +94,73 @@ export default function Register() {
     >
       <Text style={{ fontSize: 24, marginBottom: 20 }}>Register</Text>
 
-      <TextInput
-        placeholder="Email"
-        value={email}
-        onChangeText={setEmail}
-        style={{
-          width: "100%",
-          padding: 10,
-          borderWidth: 1,
-          borderColor: "#ddd",
-          borderRadius: 5,
-          marginBottom: 15,
-        }}
-        keyboardType="email-address"
-        autoCapitalize="none"
-      />
+      <View style={{ width: '100%', flexDirection: 'column', alignItems: 'center', marginBottom: 15 }}>
 
-      <TextInput
-        placeholder="Password"
-        value={password}
-        onChangeText={setPassword}
-        style={{
-          width: "100%",
-          padding: 10,
-          borderWidth: 1,
-          borderColor: "#ddd",
-          borderRadius: 5,
-          marginBottom: 15,
-        }}
-        secureTextEntry
-      />
+
+        <TextInput
+          placeholder="Name"
+          value={name}
+          onChangeText={setName}
+          style={{
+            width: "100%",
+            height: 40,
+            padding: 10,
+            borderWidth: 1,
+            borderColor: "#ddd",
+            borderRadius: 5,
+            marginBottom: 15,
+          }}
+        />
+
+        <TextInput
+          placeholder="Email"
+          value={email}
+          onChangeText={setEmail}
+          style={{
+            width: "100%",
+            padding: 10,
+            height: 40,
+            borderWidth: 1,
+            borderColor: "#ddd",
+            borderRadius: 5,
+            marginBottom: 15,
+          }}
+          keyboardType="email-address"
+          autoCapitalize="none"
+        />
+
+        <TextInput
+          placeholder="Password"
+          value={password}
+          onChangeText={setPassword}
+          style={{
+            width: "100%",
+            padding: 10,
+            height: 40,
+            borderWidth: 1,
+            borderColor: "#ddd",
+            borderRadius: 5,
+            marginBottom: 15,
+          }}
+          secureTextEntry
+        />
+
+        <TextInput
+          placeholder="Confirm Password"
+          value={confirmPassword}
+          onChangeText={setConfirmPassword}
+          style={{
+            width: "100%",
+            padding: 10,
+            height: 40,
+            borderWidth: 1,
+            borderColor: "#ddd",
+            borderRadius: 5,
+            marginBottom: 15,
+          }}
+          secureTextEntry
+        />
+      </View>
 
       <TouchableOpacity
         onPress={handleRegister}
