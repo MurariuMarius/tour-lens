@@ -1,16 +1,48 @@
 import React, { useState } from "react";
 import { Text, TextInput, TouchableOpacity, View, Alert } from "react-native";
-import { auth } from "../firebaseConfig";
+import { auth, db, app } from "../firebaseConfig";
 import { createUserWithEmailAndPassword } from "firebase/auth";
+import { collection, addDoc } from "firebase/firestore";
+import { useRouter } from "expo-router";
+import { doc, setDoc } from "firebase/firestore";
+
+import AsyncStorage from '@react-native-async-storage/async-storage';
+
+import { getFirestore } from "firebase/firestore";
+import firestore from '@react-native-firebase/firestore';
+
+
 
 export default function Register() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const router = useRouter();
 
   const handleRegister = async () => {
     try {
-      await createUserWithEmailAndPassword(auth, email, password);
+      const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+      const user = userCredential.user;
+
+      
+      
+
+       
+       const userDoc = { email: email }; 
+       await addDoc(collection(db, "users"), userDoc); 
+
+      
+      try {
+        await AsyncStorage.setItem("user", JSON.stringify(userDoc));
+        console.log("User data stored locally:", userDoc);
+
+        router.push({ pathname: "/profile", params: { userData: userDoc } });
+      } catch (storageError) {
+        console.error("Error storing user data locally:", storageError);
+        
+      }
       Alert.alert("Registration Successful");
+
+
     } catch (error) {
       Alert.alert("Registration Failed", error.message);
     }

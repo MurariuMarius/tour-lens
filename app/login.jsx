@@ -10,9 +10,27 @@ export default function Login() {
 
   const handleLogin = async () => {
     try {
+      const userCredential = await signInWithEmailAndPassword(auth, email, password);
+      const user = userCredential.user;
+
       
-      await signInWithEmailAndPassword(auth, email, password);
-      Alert.alert("Login Successful");
+      const usersCollection = collection(db, "users"); 
+      const q = query(usersCollection, where("email", "==", user.email));
+      const querySnapshot = await getDocs(q);
+
+      if (!querySnapshot.empty) {
+        const userData = querySnapshot.docs[0].data(); 
+        console.log("User Data from Firestore:", userData);
+        router.push({ pathname: "/profile", params: { userData } });
+
+      } else {
+        console.log("No user found in Firestore with this email.");
+        
+        
+      }
+
+
+
     } catch (error) {
       Alert.alert("Login Failed", error.message);
     }
@@ -29,7 +47,7 @@ export default function Login() {
         width: "100%",
       }}
     >
-      <Text style={{ fontSize: 24, marginBottom: 20 }}>Login</Text>a
+      <Text style={{ fontSize: 24, marginBottom: 20 }}>Login</Text>
 
       <TextInput
         placeholder="Email"
