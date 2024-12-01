@@ -12,6 +12,9 @@ export default function Home() {
       }}
     >
       <Text>Welcome to the App!</Text>
+      <Link href="/profile" asChild>
+        <Button title="Camera" />
+      </Link>
       <Link href="/login" asChild>
         <Button title="Go to Login" />
       </Link>
