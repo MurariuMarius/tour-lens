@@ -1,7 +1,7 @@
 import { CameraView, CameraType, useCameraPermissions } from 'expo-camera';
 import { useState, useRef } from 'react';
 import { Button, StyleSheet, Text, TouchableOpacity, View, Image } from 'react-native';
-import { Ionicons } from '@expo/vector-icons'; // Import Ionicons
+import { Ionicons } from '@expo/vector-icons';
 
 
 export default function App() {
@@ -9,6 +9,13 @@ export default function App() {
   const [permission, requestPermission] = useCameraPermissions();
   const [capturedPhoto, setCapturedPhoto] = useState(null);
   const cameraRef = useRef(null);
+
+
+  const uploadImage = async () => {
+    if (capturedPhoto && capturedPhoto.uri) {
+
+    }
+  };
 
   if (!permission) {
     return <View />;
@@ -34,7 +41,10 @@ export default function App() {
     return (
       <View style={styles.container}>
         <Image source={{ uri: capturedPhoto.uri }} style={styles.preview} />
-        <Button title="Retake" onPress={() => setCapturedPhoto(null)} />
+        <View style={styles.buttonRow}>
+          <Button title="Retake" onPress={() => setCapturedPhoto(null)} />
+          <Button title="OK" onPress={uploadImage} />
+        </View>
       </View>
     );
   }
@@ -73,6 +83,11 @@ const styles = StyleSheet.create({
     backgroundColor: 'transparent',
     margin: 64,
   },
+  buttonRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+    padding: 20,
+},
   button: {
     flex: 1,
     alignSelf: 'flex-end',
