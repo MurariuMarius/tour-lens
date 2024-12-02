@@ -8,3 +8,5 @@ dist/
 htmlcov/
 .tox/
 docs/_build/
+
+tour-lens-firebase-adminsdk.json
