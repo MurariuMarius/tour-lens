@@ -26,7 +26,7 @@ def predict_endpoint():
 
 
         # Return the prediction result
-        return jsonify({'class_name': class_name, 'confidence': confidence})
+        return jsonify({'class_name': class_name, 'confidence': confidence}), 200
     except Exception as e:
         return jsonify({'error': str(e)}), 500
 

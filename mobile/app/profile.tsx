@@ -1,8 +1,9 @@
 import { CameraView, CameraType, useCameraPermissions } from 'expo-camera';
 import { useState, useRef } from 'react';
-import { Button, StyleSheet, Text, TouchableOpacity, View, Image } from 'react-native';
+import { Button, StyleSheet, Text, TouchableOpacity, View, Image, Alert } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 
+import { predict } from '@/services/predictionService';
 
 export default function App() {
   const [facing, setFacing] = useState<CameraType>('back');
@@ -13,7 +14,11 @@ export default function App() {
 
   const uploadImage = async () => {
     if (capturedPhoto && capturedPhoto.uri) {
-
+      try {
+        const prediction = await predict(capturedPhoto);
+      } catch (error) {
+        Alert.alert("Error", error.message);
+      }
     }
   };
 
