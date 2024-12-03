@@ -2,7 +2,7 @@ from flask import Flask, request, jsonify
 from model import predict, create_model
 from persistence import fetch_model
 
-import traceback
+import traceback, uuid
 
 app = Flask(__name__)
 
@@ -14,11 +14,13 @@ def predict_endpoint():
     try:
         img_bytes = request.get_data()
         
+        id = request.args.get("id")
+        
         if not img_bytes:
             return jsonify({'error': 'No image data received. Please send image data in the request body.'}), 400
         
         try:
-            model_path = fetch_model(TEST_MODEL_ID)
+            model_path = fetch_model(id)
             class_name, confidence = predict(img_bytes, model_path)
         except Exception as e:
             print(e)
@@ -32,9 +34,7 @@ def predict_endpoint():
 
 
 @app.route('/create', methods=['POST'])
-def createDDDSDD_model():
-    
-    print('here')
+def create():
     
     try:
         if 'images' not in request.files:
@@ -42,12 +42,15 @@ def createDDDSDD_model():
 
         files = request.files.getlist('images')
         
-        print('her12e')
-
+        id = uuid.uuid4()
         
-        create_model(files, f'models/{TEST_MODEL_ID}')
+        id_to_label = create_model(files, f'models/{id}')
                 
-        return jsonify({'message': 'Model trained and saved successfully.'}), 200
+        return jsonify({
+            'message': 'Model trained and saved successfully.',
+            'labels': id_to_label,
+            'model_id': id
+        }), 200
 
     except Exception as e:
         print('blbalbaldskfj')

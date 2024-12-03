@@ -55,8 +55,9 @@ def transform_image(image_bytes):
 
 def create_model(files, output_path):
     images, labels = create_dataset(files)
-    trainer = get_model(images, labels, output_path)
+    trainer, id_to_label = get_model(images, labels, output_path)
     train(trainer)
+    return id_to_label
 
 
 def create_dataset(files):
@@ -174,7 +175,7 @@ def get_model(images, labels, output_dir):
         train_dataset=dataset_dict['train'],
         eval_dataset=dataset_dict['validation'],
         compute_metrics=compute_metrics,
-    )
+    ), id_to_label
         
         
 def train(trainer):
