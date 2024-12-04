@@ -15,6 +15,9 @@ export default function Home() {
       <Link href="/profile" asChild>
         <Button title="Camera" />
       </Link>
+      <Link href="/destination" asChild>
+        <Button title="Add destination" />
+      </Link>
       <Link href="/login" asChild>
         <Button title="Go to Login" />
       </Link>
