@@ -43,6 +43,20 @@ const Destinations = () => {
     };
 
     const addAttraction = () => {
+
+        if (!attractionName.trim()) {
+            Alert.alert("Error", "Please enter a name for the attraction.");
+            return;
+        }
+        if (!attractionDescription.trim()) {
+            Alert.alert("Error", "Please enter a description for the attraction.");
+            return;
+        }
+        if (attractionPictures.length < 10) {
+            Alert.alert("Error", "Please add at least 10 images of the landmark.");
+            return;
+        }
+
         setAttractions([
             ...attractions,
             {
@@ -58,6 +72,17 @@ const Destinations = () => {
     };
 
     const sendData = async () => {
+
+
+        if (!destinationName.trim()) {
+            Alert.alert("Error", "Please enter a name for the destination.");
+            return;
+        }
+        if (!destinationDescription.trim()) {
+            Alert.alert("Error", "Please enter a description for the destination.");
+            return;
+        }
+
         return await createDestination({
             name: destinationName,
             description: destinationDescription,
