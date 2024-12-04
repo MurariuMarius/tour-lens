@@ -8,15 +8,18 @@ from transformers import ViTImageProcessor, ViTForImageClassification, Trainer, 
 from torch.nn.functional import softmax
 import evaluate
 
-from labels import getLabels
-
-labels = getLabels()
+import config
+from labels import getLabels, saveLabels
 
 model_name_or_path = 'google/vit-base-patch16-224-in21k'
 
 processor = ViTImageProcessor.from_pretrained(model_name_or_path)
 
-def predict(image, model_path):
+
+def predict(image, model_id):
+        
+    model_path = getModelPath(model_id)
+    labels = getLabels(model_id)
         
     model = ViTForImageClassification.from_pretrained(
         model_path,
@@ -53,10 +56,14 @@ def transform_image(image_bytes):
     return image
 
 
-def create_model(files, output_path):
+def create_model(files, model_id):
+    
+    output_path = getModelPath(model_id)
+    
     images, labels = create_dataset(files)
     trainer, id_to_label = get_model(images, labels, output_path)
     train(trainer)
+    saveLabels(id_to_label, model_id)
     return id_to_label
 
 
@@ -156,7 +163,7 @@ def get_model(images, labels, output_dir):
         per_device_train_batch_size=16,
         evaluation_strategy="steps",
         num_train_epochs=4,
-        fp16=True,
+        fp16=False,
         save_steps=100,
         eval_steps=100,
         logging_steps=10,
@@ -189,3 +196,7 @@ def train(trainer):
     except Exception as e:
         print(f"Error during training: {e}")
         print(e)
+
+
+def getModelPath(model_id : int) -> str:
+    return f'{config.model_base_path}/{model_id}'

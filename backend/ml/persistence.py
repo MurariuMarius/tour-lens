@@ -3,6 +3,7 @@ from firebase_admin import credentials
 from firebase_admin import storage
 
 import os
+from model import getModelPath
 
 # cred = credentials.Certificate('./tour-lens-firebase-adminsdk.json')
 # firebase_admin.initialize_app(cred, {
@@ -21,13 +22,12 @@ MODEL_DIRECTORY = "models"
 #     blob.upload_from_filename(file_path)
 
 
-def fetch_model(id):
-    model_dir = f"models/{id}"
-    
+def check_model(id):
+        
     # blob = bucket.blob(f'{MODEL_DIRECTORY}/{id}')
     # blob.download_to_filename(f'{model_dir}/model.safetensors')
     
-    if not os.path.exists(f"{model_dir}/model.safetensors"):
-        raise LookupError(f"Model {model_dir}/model.safetensors does not exist")
+    if not os.path.exists(f"{getModelPath(id)}/model.safetensors"):
+        raise LookupError(f"Model {getModelPath(id)}/model.safetensors does not exist")
     
-    return model_dir
+    return True

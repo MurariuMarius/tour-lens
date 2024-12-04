@@ -1,12 +1,10 @@
 from flask import Flask, request, jsonify
 from model import predict, create_model
-from persistence import fetch_model
+from persistence import check_model
 
 import traceback, uuid
 
 app = Flask(__name__)
-
-TEST_MODEL_ID = "1"
 
 @app.route('/predict', methods=['POST'])
 def predict_endpoint():
@@ -14,14 +12,14 @@ def predict_endpoint():
     try:
         img_bytes = request.get_data()
         
-        id = request.args.get("id")
+        model_id = request.args.get("id")
         
         if not img_bytes:
             return jsonify({'error': 'No image data received. Please send image data in the request body.'}), 400
         
         try:
-            model_path = fetch_model(id)
-            class_name, confidence = predict(img_bytes, model_path)
+            check_model(model_id)
+            class_name, confidence = predict(img_bytes, model_id)
         except Exception as e:
             print(e)
             traceback.print_exc()
@@ -44,7 +42,7 @@ def create():
         
         id = uuid.uuid4()
         
-        id_to_label = create_model(files, f'models/{id}')
+        id_to_label = create_model(files, id)
                 
         return jsonify({
             'message': 'Model trained and saved successfully.',
