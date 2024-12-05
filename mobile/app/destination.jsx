@@ -22,23 +22,36 @@ const Destinations = () => {
         }
         return true;
     };
-
+    
     const pickImage = async () => {
-        const hasPermission = await getPermissionAsync();
-        if (!hasPermission) {
-            Alert.alert("Error", "No camera permissions")
+        console.log('Attempting to open image picker...');
+    
+        // Ensure permissions are granted
+        const permissionResult = await ImagePicker.requestMediaLibraryPermissionsAsync();
+        if (permissionResult.status !== 'granted') {
+            Alert.alert("Permission required", "Camera roll access is needed to select images.");
             return;
         }
-
+    
+        // Launch the image picker
         let result = await ImagePicker.launchImageLibraryAsync({
-            mediaTypes: ImagePicker.MediaType.IMAGE,
+            mediaTypes: ImagePicker.MediaTypeOptions.Images,
             allowsMultipleSelection: true,
             quality: 1,
             base64: true,
         });
-
-        if (!result.canceled) {
-            setAttractionPictures([...attractionPictures, ...result.assets.map(asset => asset.base64)]);
+    
+        // Check if the operation was cancelled
+        if (result.cancelled) {
+            console.log('Image picker was cancelled');
+            return;
+        }
+    
+        // Handle selected images
+        if (result.assets && result.assets.length > 0) {
+            console.log(`Selected ${result.assets.length} images`);
+            const newPictures = result.assets.map(asset => asset.base64);
+            setAttractionPictures([...attractionPictures, ...newPictures]);
         }
     };
 
@@ -112,7 +125,7 @@ const Destinations = () => {
                 multiline
             />
 
-            <Button title="Add Attraction (+)" onPress={() => setModalVisible(true)} />
+            <Button title="Add Attraction" onPress={() => setModalVisible(true)} />
 
             <FlatList
                 data={attractions}

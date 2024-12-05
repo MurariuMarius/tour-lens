@@ -1,4 +1,4 @@
-const API = "http://localhost:8080"
+const API = "http://10.0.2.2:8080"
 
 const createDestination = async (destination) => {
     try {
@@ -6,7 +6,7 @@ const createDestination = async (destination) => {
             destination: destination
         };
 
-        const response = await fetch(`${YOUR_EXPRESS_ENDPOINT_URL}/destinations`, {
+        const response = await fetch(`${API}/destinations`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',

@@ -8,7 +8,7 @@ const port = 8080;
 app.use(express.json({ limit: '50mb' })); // Allow up to 50MB JSON payload
 app.use(express.urlencoded({ extended: true, limit: '50mb' })); // For URL-encoded data
 
-app.post('/upload-images', async (req, res) => {
+app.post('/destinations', async (req, res) => {
     try {
         const destination = req.body.destination;
         console.log("Received Destination Data:", destination);
