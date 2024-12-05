@@ -29,7 +29,7 @@ app.post('/destinations', async (req, res) => {
             });
         });
 
-    const externalEndpointUrl = "http://localhost:5000/create";
+    const externalEndpointUrl = "https://tour-lens-ml-455665426558.us-central1.run.app:5000/create";
 
     const fetchResponse = await fetch(externalEndpointUrl, {
       method: 'POST',

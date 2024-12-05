@@ -14,7 +14,7 @@ for filename in os.listdir(directory_path):
         files.append(('images', open(file_path, 'rb')))  # Append the file to the list
 
 # URL to which the request will be sent
-url = 'http://localhost:5000/create'
+url = 'https://tour-lens-ml-455665426558.us-central1.run.app/model'
 
 # Send the POST request with the files
 response = requests.post(url, files=files)

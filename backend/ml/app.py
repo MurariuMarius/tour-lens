@@ -1,5 +1,5 @@
 from flask import Flask, request, jsonify
-from model import predict, create_model
+from model import predict, create_model, delete_model
 from persistence import check_model
 
 import traceback, uuid
@@ -31,7 +31,7 @@ def predict_endpoint():
         return jsonify({'error': str(e)}), 500
 
 
-@app.route('/create', methods=['POST'])
+@app.route('/model', methods=['POST'])
 def create():
     
     try:
@@ -51,12 +51,25 @@ def create():
         }), 200
 
     except Exception as e:
-        print('blbalbaldskfj')
         print(e)
         traceback.print_exc()
         return jsonify({'error': str(e)}), 500
     
     
+@app.route('/model', methods=['DELETE'])
+def delete():
+    model_id = request.args.get("id")
+    
+    try:
+        delete_model(model_id)
+    except Exception as e:
+        print(e)
+        traceback.print_exc()
+        return jsonify({'error': 'Could not delete model'}), 500
+        
+    return jsonify({}), 204
+
+    
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=5000)
+    app.run(host='0.0.0.0', port=17708)
     

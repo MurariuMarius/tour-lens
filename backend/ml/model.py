@@ -1,4 +1,5 @@
 import io
+import shutil
 
 from PIL import Image
 import numpy as np
@@ -197,6 +198,12 @@ def train(trainer):
         print(f"Error during training: {e}")
         print(e)
 
+
+def delete_model(model_id : int):
+    try:
+        shutil.rmtree(getModelPath(model_id))
+    except FileNotFoundError as e:
+        print(e)
 
 def getModelPath(model_id : int) -> str:
     return f'{config.model_base_path}/{model_id}'
