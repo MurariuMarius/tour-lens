@@ -5,6 +5,8 @@ const FormData = require("form-data");
 const fetch = require("node-fetch");
 const { firestoreService } = require("./config");
 
+const { v4: uuidv4 } = require("uuid");
+
 const externalEndpointUrl = "https://tour-lens-ml-455665426558.us-central1.run.app/model";
 
 exports.createDestination = onCall(
@@ -29,6 +31,8 @@ exports.createDestination = onCall(
         attractions.forEach(attraction => {
             const attractionLabel = attraction.label;
             const pictures = attraction.pictures;
+
+            attraction.label = uuidv4();
 
             pictures.forEach((picture, index) => {
                 const imageBuffer = Buffer.from(picture, 'base64');
