@@ -1,20 +1,15 @@
-const API = "http://10.0.2.2:8080"
+import { getFunctions, httpsCallable } from 'firebase/functions'
 
 const createDestination = async (destination) => {
     try {
         const destinationData = {
             destination: destination
         };
+        
+        const functions = getFunctions();
+        const createDestination = httpsCallable(functions, 'createDestination');
 
-        const response = await fetch(`${API}/destinations`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(destinationData),
-        });
-
-        const responseData = await response.json();
+        const responseData = await createDestination(destinationData);
         console.log('Response:', responseData);
 
     } catch (error) {

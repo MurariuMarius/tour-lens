@@ -3,6 +3,7 @@ const logger = require("firebase-functions/logger");
 
 const FormData = require("form-data");
 const fetch = require("node-fetch");
+const { firestoreService } = require("./config");
 
 const externalEndpointUrl = "https://tour-lens-ml-455665426558.us-central1.run.app/model";
 
@@ -13,6 +14,8 @@ exports.createDestination = onCall(
     cpu: 4,
   },
   async (request) => {
+
+    // TODO: Validate data
 
     try {
         const destination = request.data.destination;
@@ -50,6 +53,18 @@ exports.createDestination = onCall(
 
     const responseData = await fetchResponse.json();
 
+    destination.attractions.forEach(attraction => {
+      attraction.picture = attraction.pictures[0];
+      delete attraction.pictures;
+    })
+
+    destination.modelId = responseData.model_id;
+    destination.labels = responseData.labels;
+    destination.picture = destination.attractions[0].picture;
+
+    console.log(destination);
+
+    firestoreService.collection('destinations').add(destination);
     
     console.log("Images sent successfully:", responseData);
     return { message: "Images sent successfully", data: responseData };
