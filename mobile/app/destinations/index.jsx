@@ -1,37 +1,38 @@
-import React, { useState, useEffect } from 'react';
-import { StyleSheet, Text, View, FlatList, ImageBackground, TouchableOpacity, ActivityIndicator } from 'react-native';
+import React, { useEffect } from 'react';
+import { StyleSheet, View, FlatList, Text, ImageBackground, TouchableOpacity, ActivityIndicator } from 'react-native';
 import { Link } from 'expo-router';
-import { getDestinations } from '../../services/destinationService';
+
 import getUriFromBase64 from '@/utils/getUriFromBase64';
+import { useDestinations } from '../../contexts/DestinationContext';
 
 export default function DestinationList() {
-  const [destinations, setDestinations] = useState([]);
-  const [isLoading, setIsLoading] = useState(true);
+  const { destinations, isLoading, error, refresh } = useDestinations();
 
   useEffect(() => {
-    async function fetchData() {
-      setIsLoading(true);
-      const data = await getDestinations();
-      setDestinations(data);
-      setIsLoading(false);
-    }
+    refresh();
+  }, [refresh]);
 
-    fetchData();
-  }, []);
+  if (error) {
+    return <Text>Error: {error}</Text>;
+  }
 
-  const renderItem = ({ item }) => (
-    <TouchableOpacity style={styles.card}>
-      <Link href={`/destination/${encodeURIComponent(item.id)}`} asChild>
-        <View style={{ flex: 1 }}>
-          <ImageBackground source={{ uri: getUriFromBase64(item.picture) }} style={styles.cardImage}>
-            <View style={styles.cardOverlay}>
-              <Text style={styles.cardTitle}>{item.name}</Text>
-            </View>
-          </ImageBackground>
-        </View>
-      </Link>
-    </TouchableOpacity>
-  );
+  destinations.forEach(d => console.log(d.id));
+
+  const renderItem = ({ item }) => {
+    return (
+      <TouchableOpacity style={styles.card}>
+        <Link href={`/destinations/${item.id}`}>
+          <View style={{ flex: 1 }}>
+            <ImageBackground source={{ uri: getUriFromBase64(item.picture) }} style={styles.cardImage}>
+              <View style={styles.cardOverlay}>
+                <Text style={styles.cardTitle}>{item.name}</Text>
+              </View>
+            </ImageBackground>
+          </View>
+        </Link>
+      </TouchableOpacity>
+    )
+  };
 
   if (isLoading) {
     return (
@@ -47,18 +48,15 @@ export default function DestinationList() {
         data={destinations}
         renderItem={renderItem}
         keyExtractor={(item) => item.id}
-        contentContainerStyle={styles.list}
+        contentContainerStyle={styles.listContent}
       />
     </View>
   );
 }
+
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    padding: 10,
-  },
-  list: {
-    paddingBottom: 20,
   },
   card: {
     height: 200,

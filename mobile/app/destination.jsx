@@ -73,7 +73,7 @@ const Destinations = () => {
         setAttractions([
             ...attractions,
             {
-                label: attractionName,
+                name: attractionName,
                 description: attractionDescription,
                 pictures: attractionPictures,
             },
@@ -132,7 +132,7 @@ const Destinations = () => {
                 keyExtractor={(item, index) => index.toString()}
                 renderItem={({ item, index }) => (
                     <View style={styles.attractionItem}>
-                        <Text>{item.label}</Text>
+                        <Text>{item.name}</Text>
                         <Button title="Remove" onPress={() => removeAttraction(index)} />
                     </View>
                 )}

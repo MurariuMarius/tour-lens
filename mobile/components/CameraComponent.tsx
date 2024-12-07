@@ -5,7 +5,7 @@ import { Ionicons } from '@expo/vector-icons';
 
 import { predict } from '@/services/predictionService';
 
-export default function App() {
+export default function CameraComponent({ onClose, modelId, attractions }) {
   const [facing, setFacing] = useState<CameraType>('back');
   const [permission, requestPermission] = useCameraPermissions();
   const [capturedPhoto, setCapturedPhoto] = useState(null);
@@ -16,7 +16,9 @@ export default function App() {
   const uploadImage = async () => {
     if (capturedPhoto && capturedPhoto.uri) {
       try {
-        const prediction = await predict(capturedPhoto);
+        const prediction = await predict(capturedPhoto, modelId);
+
+        // prediction.name = attractions.find(attraction => attraction.label === prediction.)
 
         setPredictionResult(prediction);
 
