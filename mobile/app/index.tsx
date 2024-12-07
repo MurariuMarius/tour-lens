@@ -21,6 +21,9 @@ export default function Home() {
       <Link href="/login" asChild>
         <Button title="Go to Login" />
       </Link>
+      <Link href="/destinations" asChild>
+        <Button title="View Destinations" />
+      </Link>
     </View>
   );
 }
