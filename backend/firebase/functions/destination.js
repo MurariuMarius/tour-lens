@@ -29,14 +29,14 @@ exports.createDestination = onCall(
         const formData = new FormData();
 
         attractions.forEach(attraction => {
+            attraction.label = uuidv4();
+            
             const attractionLabel = attraction.label;
             const pictures = attraction.pictures;
 
-            attraction.label = uuidv4();
-
             pictures.forEach((picture, index) => {
                 const imageBuffer = Buffer.from(picture, 'base64');
-                const filename = `${attractionLabel}_${destinationId}_${index}.jpg`;
+                const filename = `${attractionLabel}_${index}.jpg`;
                 formData.append('images', imageBuffer, { filename });
             });
         });

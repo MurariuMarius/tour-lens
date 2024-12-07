@@ -48,7 +48,7 @@ def predict(image, model_id):
         for idx in range(len(predicted_class_idx)):
             print(f"Predicted Class: {predicted_class_idx[idx].item()}, Confidence: {confidence[idx].item():.2f}")
 
-        return predicted_class_idx[0].item(), confidence[0].item()
+        return labels[predicted_class_idx[0].item()], confidence[0].item()
 
 
 def transform_image(image_bytes):
