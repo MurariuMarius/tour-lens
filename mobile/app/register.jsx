@@ -2,9 +2,8 @@ import React, { useState } from "react";
 import { Text, TextInput, TouchableOpacity, View, Alert } from "react-native";
 import { auth, db } from "../firebaseConfig";
 import { createUserWithEmailAndPassword } from "firebase/auth";
-import { collection, addDoc } from "firebase/firestore";
+import { collection, Timestamp, doc, setDoc } from "firebase/firestore";
 import { useRouter } from "expo-router";
-import { doc, setDoc } from "firebase/firestore";
 
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
@@ -57,12 +56,14 @@ export default function Register() {
       const userCredential = await createUserWithEmailAndPassword(auth, email, password);
       const user = userCredential.user;
 
-      const docRef = doc(collection(db, "users"), userDoc, user.uid);
-      await setDoc(docRef, {
+      userDoc =  {
         name: name,
         email: email,
-        createdAt: Timestam.now()
-      })
+        createdAt: Timestamp.now()
+      }
+
+      const docRef = doc(collection(db, "users"), user.uid);
+      await setDoc(docRef, userDoc)
 
       try {
         await AsyncStorage.setItem("user", JSON.stringify(userDoc));

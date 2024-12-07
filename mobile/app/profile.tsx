@@ -9,6 +9,7 @@ export default function App() {
   const [facing, setFacing] = useState<CameraType>('back');
   const [permission, requestPermission] = useCameraPermissions();
   const [capturedPhoto, setCapturedPhoto] = useState(null);
+  const [predictionResult, setPredictionResult] = useState(null);
   const cameraRef = useRef(null);
 
 
@@ -16,6 +17,9 @@ export default function App() {
     if (capturedPhoto && capturedPhoto.uri) {
       try {
         const prediction = await predict(capturedPhoto);
+
+        setPredictionResult(prediction);
+
       } catch (error) {
         Alert.alert("Error", error.message);
       }
@@ -39,13 +43,19 @@ export default function App() {
     if (cameraRef.current) {
       const photo = await cameraRef.current.takePictureAsync();
       setCapturedPhoto(photo);
+      setPredictionResult(null);
     }
   }
 
   if (capturedPhoto) {
     return (
       <View style={styles.container}>
-        <Image source={{ uri: capturedPhoto.uri }} style={styles.preview} />
+      <Image source={{ uri: capturedPhoto.uri }} style={styles.preview} />
+        {predictionResult && (
+          <View style={styles.floatingLabel}>
+            <Text style={styles.labelText}>{predictionResult}</Text>
+          </View>
+        )}       
         <View style={styles.buttonRow}>
           <Button title="Retake" onPress={() => setCapturedPhoto(null)} />
           <Button title="OK" onPress={uploadImage} />
@@ -99,6 +109,20 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   text: {
+    fontSize: 24,
+    fontWeight: 'bold',
+    color: 'white',
+  },
+  floatingLabel: {
+    position: 'absolute',
+    bottom: 50,
+    left: 0,
+    right: 0,
+    alignItems: 'center',
+    backgroundColor: 'rgba(0,0,0,0.5)',
+    padding: 8,
+  },
+  labelText: {
     fontSize: 24,
     fontWeight: 'bold',
     color: 'white',
