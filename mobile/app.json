@@ -48,7 +48,8 @@
           "microphonePermission": "Allow Tour Lens to access your microphone",
           "recordAudioAndroid": true
         }
-      ]
+      ],
+      "expo-font"
     ],
     "experiments": {
       "typedRoutes": true

@@ -1,9 +1,11 @@
 import { CameraView, CameraType, useCameraPermissions } from 'expo-camera';
 import { useState, useRef } from 'react';
-import { Button, StyleSheet, Text, TouchableOpacity, View, Image, Alert } from 'react-native';
+import { Button, StyleSheet, TouchableOpacity, View, Image, Alert } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 
 import { predict } from '@/services/predictionService';
+
+import { Text } from "@/components/StyledComponents";
 
 export default function CameraComponent({ onClose, modelId, attractions }) {
   const [facing, setFacing] = useState<CameraType>('back');
@@ -77,9 +79,12 @@ export default function CameraComponent({ onClose, modelId, attractions }) {
       <CameraView ref={cameraRef} style={styles.camera} facing={facing}>
         <View style={styles.buttonContainer}>
           <TouchableOpacity style={styles.button} onPress={takePicture}>
-          <Ionicons name="camera" size={32} color="white" /> 
+            <Ionicons name="camera" size={32} color="white" />
           </TouchableOpacity>
         </View>
+        <TouchableOpacity style={styles.closeButton} onPress={onClose}>
+          <Ionicons name="close" size={32} color="white" />
+        </TouchableOpacity>
       </CameraView>
     </View>
   );
@@ -96,6 +101,14 @@ const styles = StyleSheet.create({
   },
   camera: {
     flex: 1,
+  },
+  closeButton: {
+    position: 'absolute',
+    top: 20,  // Adjust top spacing
+    right: 20, // Adjust right spacing
+    zIndex: 2, // Ensure it's on top
+    padding: 10, // Optional: Add padding for touch area
+    borderRadius: 20, // Optional: Make it a circle
   },
   preview: {
     flex: 1,

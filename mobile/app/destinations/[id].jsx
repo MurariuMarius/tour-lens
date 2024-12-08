@@ -2,12 +2,13 @@ import React, { useState } from 'react';
 import { useLocalSearchParams } from 'expo-router';
 import { useDestinations } from '@/contexts/DestinationContext';
 
-import { Modal, StyleSheet, View, FlatList, Text, ImageBackground, TouchableOpacity } from 'react-native';
+import { Linking, Modal, StyleSheet, View, FlatList, ImageBackground, TouchableOpacity, ScrollView } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 
 import getUriFromBase64 from '@/utils/getUriFromBase64';
 
 import CameraComponent from '@/components/CameraComponent';
+import { Text } from "@/components/StyledComponents";
 
 export default function DestinationDetails() {
 
@@ -15,6 +16,8 @@ export default function DestinationDetails() {
   const { id } = useLocalSearchParams();
 
   const [cameraVisible, setCameraVisible] = useState(false);
+  const [selectedAttraction, setSelectedAttraction] = useState(null);
+
 
   const destination = destinations.find(destination => destination.id === id);
 
@@ -29,14 +32,23 @@ export default function DestinationDetails() {
   }
 
   const renderAttraction = ({ item }) => (
-    <View style={styles.attractionCard}>
-      <ImageBackground source={{ uri: getUriFromBase64(item.picture) }} style={styles.attractionImage}>
-        <View style={styles.attractionOverlay}>
-          <Text style={styles.attractionTitle}>{item.name}</Text>
-        </View>
-      </ImageBackground>
-    </View>
+    <TouchableOpacity onPress={() => setSelectedAttraction(item)}>
+      <View style={styles.attractionCard}>
+        <ImageBackground source={{ uri: getUriFromBase64(item.picture) }} style={styles.attractionImage}>
+          <View style={styles.attractionOverlay}>
+            <Text style={styles.attractionTitle}>{item.name}</Text>
+          </View>
+        </ImageBackground>
+      </View>
+    </TouchableOpacity>
   );
+
+  const openPlusCodeInMaps = (plusCode) => {
+    plusCode = plusCode.replace("+", "%2B")
+    const url = `https://www.google.com/maps/search/?api=1&query=${plusCode}`;
+    Linking.openURL(url);
+  };
+
 
   return (
     <View style={styles.container}>
@@ -61,7 +73,34 @@ export default function DestinationDetails() {
           attractions={destination.attractions}
         />
       </Modal>
+      <Modal visible={selectedAttraction !== null} animationType="slide" onRequestClose={() => setSelectedAttraction(null)}>
+        <View style={styles.modalContainer}>
+          <ImageBackground source={{ uri: getUriFromBase64(selectedAttraction?.picture) }} style={styles.modalImage}>
+            <View style={styles.modalImageOverlay}>
+              <Text style={styles.modalImageTitle}>{selectedAttraction?.name}</Text>
+            </View>
+          </ImageBackground>
+          <ScrollView style={styles.modalContent}>
+            <View style={styles.descriptionContainer}> {/* Added container for description */}
+              <Text style={styles.modalDescription}>{selectedAttraction?.description}</Text>
+            </View>            
+            <TouchableOpacity onPress={() => openPlusCodeInMaps(selectedAttraction?.pluscode)}>
+              <View style={styles.mapOverlay}>
+                <View style={styles.mapTextButton}> {/* Added a container for icon and text */}
+                  <Ionicons name="navigate-outline" size={20} color="white" style={styles.mapIcon} /> {/* Added Google Maps Icon */}
+                  <Text style={styles.mapText}>Open in Google Maps</Text>
+                </View>
+              </View>
+            </TouchableOpacity>
+          </ScrollView>
+          <TouchableOpacity style={styles.closeButton} onPress={() => setSelectedAttraction(null)}>
+            <Ionicons name="close" size={32} color="white" />
+          </TouchableOpacity>
+        </View>
+      </Modal>
+
     </View>
+
   );
 }
 
@@ -74,6 +113,12 @@ const styles = StyleSheet.create({
     padding: 10,
     paddingBottom: 80,
   },
+  descriptionContainer: {
+    backgroundColor: '#f0f0f0', // Light grey background
+    padding: 20,
+    borderRadius: 15,
+    marginBottom: 10,
+},
   fixedButton: {
     position: 'absolute',
     bottom: 20,
@@ -113,6 +158,64 @@ const styles = StyleSheet.create({
   },
   list: {
     paddingBottom: 20,
+  },
+  modalContainer: {
+    flex: 1,
+  },
+  modalImage: {
+    height: 300, // Set a fixed height or adjust as needed
+    justifyContent: 'flex-end', // Align title to bottom
+    resizeMode: 'cover'
+  },
+  modalImageOverlay: {
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    padding: 10,
+  },
+  modalImageTitle: {
+    color: 'white',
+    fontSize: 24,
+    fontWeight: 'bold',
+  },
+  modalContent: {
+    padding: 20,
+    flex: 1, // Allow description to take remaining space
+  },
+  mapPreviewImage: { // Style for the ImageBackground *inside* the View
+    width: '100%',
+    height: '100%',
+    resizeMode: 'cover', // Ensures image covers the entire View
+  },
+  mapOverlay: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    borderRadius: 15,
+    padding: 7,
+  },
+  mapTextButton: { // Container for the icon and text to align them
+    flexDirection: 'row',
+    alignItems: 'center',
+
+  },
+  mapIcon: {
+    marginRight: 10, // Space between icon and text
+  },
+  mapText: {
+    color: 'white',
+    fontSize: 16,
+    fontWeight: 'bold',
+  },
+  modalDescription: {
+    fontSize: 16,
+  },
+  closeButton: {
+    position: 'absolute',
+    top: 20,
+    right: 20,
+    zIndex: 2,
+    padding: 10,
+    borderRadius: 20,
   },
   attractionCard: {
     height: 150,

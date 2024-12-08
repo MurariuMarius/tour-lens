@@ -1,8 +1,10 @@
 import React, { useState } from "react";
-import { Text, TextInput, TouchableOpacity, View, Alert } from "react-native";
+import { TouchableOpacity, View, Alert } from "react-native";
 import { auth } from "../firebaseConfig"; 
 import { signInWithEmailAndPassword } from "firebase/auth"; 
-import { Link } from "expo-router"; 
+import { Link } from "expo-router";
+
+import { Text, TextInput } from "@/components/StyledComponents";
 
 export default function Login() {
   const [email, setEmail] = useState("");

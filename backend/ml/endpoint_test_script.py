@@ -15,6 +15,7 @@ for filename in os.listdir(directory_path):
 
 # URL to which the request will be sent
 url = 'https://tour-lens-ml-455665426558.us-central1.run.app/model'
+# url = "http://localhost:17708/model"
 
 # Send the POST request with the files
 response = requests.post(url, files=files)

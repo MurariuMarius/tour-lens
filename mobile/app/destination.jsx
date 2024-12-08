@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput, Button, FlatList, Modal, Image, StyleSheet, Platform, Alert } from 'react-native';
+import { View, FlatList, Modal, Image, StyleSheet, Platform, Alert } from 'react-native';
 import * as ImagePicker from 'expo-image-picker';
 import { createDestination } from '../services/destinationService';
 
+import { Text, Button, TextInput } from '@/components/StyledComponents';
 
 const Destinations = () => {
 

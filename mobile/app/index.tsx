@@ -1,6 +1,8 @@
 import React from "react";
-import { View, Text, Button } from "react-native";
+import { View } from "react-native";
 import { Link } from "expo-router";
+
+import { Text, Button } from "@/components/StyledComponents";
 
 export default function Home() {
   return (

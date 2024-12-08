@@ -1,11 +1,13 @@
 import React, { useState } from "react";
-import { Text, TextInput, TouchableOpacity, View, Alert } from "react-native";
+import { TouchableOpacity, View, Alert } from "react-native";
 import { auth, db } from "../firebaseConfig";
 import { createUserWithEmailAndPassword } from "firebase/auth";
 import { collection, Timestamp, doc, setDoc } from "firebase/firestore";
 import { useRouter } from "expo-router";
 
 import AsyncStorage from '@react-native-async-storage/async-storage';
+
+import { Text, TextInput } from "@/components/StyledComponents";
 
 export default function Register() {
   const [name, setName] = useState("");

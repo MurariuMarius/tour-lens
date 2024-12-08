@@ -1,9 +1,11 @@
 import React, { useEffect } from 'react';
-import { StyleSheet, View, FlatList, Text, ImageBackground, TouchableOpacity, ActivityIndicator } from 'react-native';
+import { StyleSheet, View, FlatList, ImageBackground, TouchableOpacity, ActivityIndicator } from 'react-native';
 import { Link } from 'expo-router';
 
 import getUriFromBase64 from '@/utils/getUriFromBase64';
 import { useDestinations } from '../../contexts/DestinationContext';
+
+import { Text } from "@/components/StyledComponents";
 
 export default function DestinationList() {
   const { destinations, isLoading, error, refresh } = useDestinations();
