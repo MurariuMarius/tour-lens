@@ -7,6 +7,8 @@ import { predict } from '@/services/predictionService';
 
 import { Text, Button } from "@/components/StyledComponents";
 
+import { minimumPredictionConfidence } from "@/config";
+
 export default function CameraComponent({ onClose, modelId, attractions, onAttractionPredicted }) {
   const [facing, setFacing] = useState<CameraType>('back');
   const [permission, requestPermission] = useCameraPermissions();
@@ -22,13 +24,14 @@ export default function CameraComponent({ onClose, modelId, attractions, onAttra
 
       try {
         const prediction = await predict(capturedPhoto, modelId);
-
-        const attraction = (attractions.find(attraction => attraction.label === prediction.class_name))
-
-        setAttraction(attraction);
-
+        
         console.log(`Predicted ${prediction.name} with confidence ${prediction.confidence}`)
 
+        if (parseFloat(prediction.confidence) >= minimumPredictionConfidence) {
+          setAttraction(attractions.find(attraction => attraction.label === prediction.class_name))
+        } else {
+          Alert.alert("No attraction identified", "The picture might not contain a supported landmark. Please try again.")
+        }
       } catch (error) {
         Alert.alert("Error", error.message);
       }
