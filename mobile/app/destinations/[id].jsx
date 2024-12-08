@@ -31,6 +31,11 @@ export default function DestinationDetails() {
     );
   }
 
+  const openAttractionModal = (attraction) => {
+    setSelectedAttraction(attraction);
+    setCameraVisible(false);
+  };
+
   const renderAttraction = ({ item }) => (
     <TouchableOpacity onPress={() => setSelectedAttraction(item)}>
       <View style={styles.attractionCard}>
@@ -71,6 +76,7 @@ export default function DestinationDetails() {
           onClose={() => setCameraVisible(false)}
           modelId={destination.modelId}
           attractions={destination.attractions}
+          onAttractionPredicted={openAttractionModal} 
         />
       </Modal>
       <Modal visible={selectedAttraction !== null} animationType="slide" onRequestClose={() => setSelectedAttraction(null)}>
@@ -83,7 +89,7 @@ export default function DestinationDetails() {
           <ScrollView style={styles.modalContent}>
             <View style={styles.descriptionContainer}> {/* Added container for description */}
               <Text style={styles.modalDescription}>{selectedAttraction?.description}</Text>
-            </View>            
+            </View>
             <TouchableOpacity onPress={() => openPlusCodeInMaps(selectedAttraction?.plusCode)}>
               <View style={styles.mapOverlay}>
                 <View style={styles.mapTextButton}> {/* Added a container for icon and text */}
@@ -118,7 +124,7 @@ const styles = StyleSheet.create({
     padding: 20,
     borderRadius: 15,
     marginBottom: 10,
-},
+  },
   fixedButton: {
     position: 'absolute',
     bottom: 20,

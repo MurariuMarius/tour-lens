@@ -1,17 +1,17 @@
 import { CameraView, CameraType, useCameraPermissions } from 'expo-camera';
 import { useState, useRef } from 'react';
-import { Button, StyleSheet, TouchableOpacity, View, Image, Alert } from 'react-native';
+import { StyleSheet, TouchableOpacity, View, Image, Alert } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 
 import { predict } from '@/services/predictionService';
 
-import { Text } from "@/components/StyledComponents";
+import { Text, Button } from "@/components/StyledComponents";
 
-export default function CameraComponent({ onClose, modelId, attractions }) {
+export default function CameraComponent({ onClose, modelId, attractions, onAttractionPredicted }) {
   const [facing, setFacing] = useState<CameraType>('back');
   const [permission, requestPermission] = useCameraPermissions();
   const [capturedPhoto, setCapturedPhoto] = useState(null);
-  const [predictionResult, setPredictionResult] = useState(null);
+  const [attraction, setAttraction] = useState(null);
   const cameraRef = useRef(null);
 
 
@@ -23,11 +23,11 @@ export default function CameraComponent({ onClose, modelId, attractions }) {
       try {
         const prediction = await predict(capturedPhoto, modelId);
 
-        const attraction = attractions.find(attraction => attraction.label === prediction.class_name)
+        const attraction = (attractions.find(attraction => attraction.label === prediction.class_name))
 
-        prediction.name = attraction.name
+        setAttraction(attraction);
 
-        setPredictionResult(prediction);
+        console.log(`Predicted ${prediction.name} with confidence ${prediction.confidence}`)
 
       } catch (error) {
         Alert.alert("Error", error.message);
@@ -60,16 +60,17 @@ export default function CameraComponent({ onClose, modelId, attractions }) {
     return (
       <View style={styles.container}>
       <Image source={{ uri: capturedPhoto.uri }} style={styles.preview} />
-        {predictionResult && (
+        {attraction ? (
           <View style={styles.floatingLabel}>
-            <Text style={styles.labelText}>{predictionResult.name}</Text>
-            <Text style={styles.labelText}>{JSON.stringify(predictionResult)}</Text>
+            <Text style={styles.labelText}>{attraction.name}</Text>
+            <Button style={styles.viewDetailsButton} title="View Details" onPress={() => { onAttractionPredicted(attraction); onClose(); }} />
           </View>
-        )}       
+        ) : (
         <View style={styles.buttonRow}>
-          <Button title="Retake" onPress={() => setCapturedPhoto(null)} />
-          <Button title="OK" onPress={uploadImage} />
+          <Button title="Retake" style={styles.retakeButton} onPress={() => setCapturedPhoto(null)} />
+          <Button title="OK" style={styles.okButton} onPress={uploadImage} />
         </View>
+        )}
       </View>
     );
   }
@@ -104,11 +105,11 @@ const styles = StyleSheet.create({
   },
   closeButton: {
     position: 'absolute',
-    top: 20,  // Adjust top spacing
-    right: 20, // Adjust right spacing
-    zIndex: 2, // Ensure it's on top
-    padding: 10, // Optional: Add padding for touch area
-    borderRadius: 20, // Optional: Make it a circle
+    top: 20,
+    right: 20,
+    zIndex: 2,
+    padding: 10,
+    borderRadius: 20,
   },
   preview: {
     flex: 1,
@@ -122,6 +123,7 @@ const styles = StyleSheet.create({
   buttonRow: {
     flexDirection: 'row',
     justifyContent: 'space-around',
+    backgroundColor: "#f0f0f0",
     padding: 20,
 },
   button: {
@@ -144,8 +146,20 @@ const styles = StyleSheet.create({
     padding: 8,
   },
   labelText: {
-    fontSize: 24,
+    fontSize: 30,
     fontWeight: 'bold',
     color: 'white',
+    marginBottom: 15,
   },
+  retakeButton: {
+    backgroundColor: 'red',
+    width: 100,
+  },
+  okButton: {
+    backgroundColor: '#00b500',
+    width: 100,
+  },
+  viewDetailsButton: {
+    padding: 15,
+  }
 });
