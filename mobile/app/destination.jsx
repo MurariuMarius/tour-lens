@@ -1,21 +1,30 @@
-import React, { useState } from 'react';
-import { View, FlatList, Modal, Image, StyleSheet, TouchableOpacity, Alert } from 'react-native';
+import React, { useState, useRef, useEffect } from 'react';
+import { View, FlatList, Modal, Image, StyleSheet, TouchableOpacity, Alert, Animated } from 'react-native';
 import * as ImagePicker from 'expo-image-picker';
 import { createDestination } from '../services/destinationService';
+import { useNavigation } from '@react-navigation/native';
 import { Ionicons } from '@expo/vector-icons';
 
 import { Text, Button, TextInput } from '@/components/StyledComponents';
+import { MessageModal, useMessageModal } from '@/components/MessageModal';
 
 const Destinations = () => {
 
     const [destinationName, setDestinationName] = useState('');
     const [destinationDescription, setDestinationDescription] = useState('');
     const [attractions, setAttractions] = useState([]);
-    const [modalVisible, setModalVisible] = useState(false);
+    const [showAttractionModal, setShowAttractionModal] = useState(false);
     const [attractionName, setAttractionName] = useState('');
     const [attractionDescription, setAttractionDescription] = useState('');
     const [attractionPlusCode, setAttractionPlusCode] = useState('');
     const [attractionPictures, setAttractionPictures] = useState([]);
+
+    const progress = useRef(new Animated.Value(0)).current;
+    const timerRef = useRef(null);
+
+    const { showModal } = useMessageModal();
+
+    const navigation = useNavigation();
 
     const getPermissionAsync = async () => {
         const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
@@ -82,7 +91,7 @@ const Destinations = () => {
                 pictures: attractionPictures,
             },
         ]);
-        setModalVisible(false);
+        setShowAttractionModal(false);
         setAttractionName('');
         setAttractionDescription('');
         setAttractionPlusCode('');
@@ -90,8 +99,6 @@ const Destinations = () => {
     };
 
     const sendData = async () => {
-
-
         if (!destinationName.trim()) {
             Alert.alert("Error", "Please enter a name for the destination.");
             return;
@@ -101,12 +108,19 @@ const Destinations = () => {
             return;
         }
 
-        return await createDestination({
-            name: destinationName,
-            description: destinationDescription,
-            attractions: attractions,
-        });
-    }
+        try {
+            createDestination({
+                name: destinationName,
+                description: destinationDescription,
+                attractions: attractions,
+            });
+
+            showModal("Started model training 🎉", "You should see the newly added destination shortly.");
+
+        } catch (error) {
+            Alert.alert("Error", "Failed to create destination: " + error.message);
+        }
+    };
 
     const removeAttraction = (index) => {
         const newAttractions = [...attractions];
@@ -130,7 +144,7 @@ const Destinations = () => {
                 multiline
             />
 
-            <Button title="Add Attraction" onPress={() => setModalVisible(true)} />
+            <Button title="Add Attraction" onPress={() => setShowAttractionModal(true)} />
 
             <FlatList
                 data={attractions}
@@ -145,10 +159,10 @@ const Destinations = () => {
 
             <Button title="Send Data" onPress={sendData} />
 
-            <Modal animationType="slide" transparent={false} visible={modalVisible}>
+            <Modal animationType="slide" transparent={false} visible={showAttractionModal}>
                 <View style={styles.modalContainer}>
                     <View style={styles.modalHeader}>
-                        <TouchableOpacity onPress={() => setModalVisible(false)} style={styles.closeButton}>
+                        <TouchableOpacity onPress={() => setShowAttractionModal(false)} style={styles.closeButton}>
                             <Ionicons name="close" size={24} color="black" />
                         </TouchableOpacity>
                     </View>
@@ -188,6 +202,7 @@ const Destinations = () => {
                 </View>
             </Modal>
         </View>
+        
     );
 };
 
@@ -225,7 +240,7 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         justifyContent: 'flex-end',
         alignItems: 'center',
-        marginBottom: 20,        
+        marginBottom: 20,
     },
     closeButton: {
         padding: 10,

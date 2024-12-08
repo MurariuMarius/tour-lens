@@ -25,10 +25,12 @@ export default function CameraComponent({ onClose, modelId, attractions, onAttra
       try {
         const prediction = await predict(capturedPhoto, modelId);
         
-        console.log(`Predicted ${prediction.name} with confidence ${prediction.confidence}`)
+        const attraction = attractions.find(attraction => attraction.label === prediction.class_name);
+        
+        console.log(`Predicted ${attraction.name} with confidence ${prediction.confidence}`)
 
         if (parseFloat(prediction.confidence) >= minimumPredictionConfidence) {
-          setAttraction(attractions.find(attraction => attraction.label === prediction.class_name))
+          setAttraction(attraction)
         } else {
           Alert.alert("No attraction identified", "The picture might not contain a supported landmark. Please try again.")
         }
