@@ -10,7 +10,7 @@ const predict = async (image, modelId) => {
       body: image
     });
 
-    const body = await response.text();
+    const body = await response.json();
 
     console.log(body)
 

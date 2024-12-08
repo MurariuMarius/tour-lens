@@ -15,10 +15,15 @@ export default function CameraComponent({ onClose, modelId, attractions }) {
 
   const uploadImage = async () => {
     if (capturedPhoto && capturedPhoto.uri) {
+
+      console.log("Uploading image...");
+
       try {
         const prediction = await predict(capturedPhoto, modelId);
 
-        // prediction.name = attractions.find(attraction => attraction.label === prediction.)
+        const attraction = attractions.find(attraction => attraction.label === prediction.class_name)
+
+        prediction.name = attraction.name
 
         setPredictionResult(prediction);
 
@@ -55,7 +60,8 @@ export default function CameraComponent({ onClose, modelId, attractions }) {
       <Image source={{ uri: capturedPhoto.uri }} style={styles.preview} />
         {predictionResult && (
           <View style={styles.floatingLabel}>
-            <Text style={styles.labelText}>{predictionResult}</Text>
+            <Text style={styles.labelText}>{predictionResult.name}</Text>
+            <Text style={styles.labelText}>{JSON.stringify(predictionResult)}</Text>
           </View>
         )}       
         <View style={styles.buttonRow}>

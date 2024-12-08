@@ -57,7 +57,9 @@ export default function DestinationDetails() {
       <Modal visible={cameraVisible} animationType="slide" onRequestClose={() => setCameraVisible(false)}>
         <CameraComponent
           onClose={() => setCameraVisible(false)}
-          modelId={destination.modelId}/>
+          modelId={destination.modelId}
+          attractions={destination.attractions}
+        />
       </Modal>
     </View>
   );
