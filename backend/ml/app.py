@@ -84,10 +84,7 @@ def get_models():
         models = os.listdir(config.model_base_path)
         print(models)
         
-        try:
-            models = filter(lambda model : check_model(model))
-        except LookupError as e:
-            print(e)
+        models = [model for model in models if check_model(model)]
         
         return jsonify({'models': models}), 200
     except Exception as e:

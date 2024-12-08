@@ -27,7 +27,5 @@ def check_model(id):
     # blob = bucket.blob(f'{MODEL_DIRECTORY}/{id}')
     # blob.download_to_filename(f'{model_dir}/model.safetensors')
     
-    if not os.path.exists(f"{getModelPath(id)}/model.safetensors"):
-        raise LookupError(f"Model {getModelPath(id)}/model.safetensors does not exist")
-    
-    return True
+    return os.path.exists(f"{getModelPath(id)}/model.safetensors")
+

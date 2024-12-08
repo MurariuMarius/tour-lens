@@ -1,1 +1,1 @@
-model_base_path = "models"
+model_base_path = "/mnt/models"

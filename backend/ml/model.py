@@ -1,5 +1,6 @@
 import io
 import shutil
+import os
 
 from PIL import Image
 import numpy as np
@@ -64,7 +65,14 @@ def create_model(files, model_id):
     images, labels = create_dataset(files)
     trainer, id_to_label = get_model(images, labels, output_path)
     train(trainer)
+    
+    try:
+        _clean_model_directory(output_path)
+    except Exception as e:
+        print(e)
+    
     saveLabels(id_to_label, model_id)
+    
     return id_to_label
 
 
@@ -205,5 +213,23 @@ def delete_model(model_id : int):
     except FileNotFoundError as e:
         print(e)
 
+
 def getModelPath(model_id : int) -> str:
     return f'{config.model_base_path}/{model_id}'
+
+
+def _clean_model_directory(directory):
+    filename_to_keep = f"{directory}/model.safetensors"
+
+    for item in os.listdir(directory):
+        item_path = os.path.join(directory, item)
+        
+        if item_path != filename_to_keep:
+            try:
+                if os.path.isfile(item_path):
+                    os.remove(item_path)
+                elif os.path.isdir(item_path):
+                    shutil.rmtree(item_path)
+                print(f"Removed: {item_path}")
+            except Exception as e:
+                print(f"Error removing {item_path}: {e}")
