@@ -13,7 +13,7 @@ export default function Home() {
         alignItems: "center",
       }}
     >
-      <Text>Welcome to the App!</Text>
+      <Text style={{fontFamily: "Montserrat_900Black"}}>Welcome to the App!</Text>
       <Link href="/destination" asChild>
         <Button title="Add destination" />
       </Link>

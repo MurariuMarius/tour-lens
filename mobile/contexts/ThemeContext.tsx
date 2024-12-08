@@ -28,7 +28,6 @@ export const ThemeProvider = ({ children }) => {
     Montserrat_400Regular_Italic,
     Montserrat_500Medium,
     Montserrat_600SemiBold,
-
     Montserrat_900Black,
   });
 

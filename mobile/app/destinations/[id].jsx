@@ -84,7 +84,7 @@ export default function DestinationDetails() {
             <View style={styles.descriptionContainer}> {/* Added container for description */}
               <Text style={styles.modalDescription}>{selectedAttraction?.description}</Text>
             </View>            
-            <TouchableOpacity onPress={() => openPlusCodeInMaps(selectedAttraction?.pluscode)}>
+            <TouchableOpacity onPress={() => openPlusCodeInMaps(selectedAttraction?.plusCode)}>
               <View style={styles.mapOverlay}>
                 <View style={styles.mapTextButton}> {/* Added a container for icon and text */}
                   <Ionicons name="navigate-outline" size={20} color="white" style={styles.mapIcon} /> {/* Added Google Maps Icon */}

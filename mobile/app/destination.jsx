@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
-import { View, FlatList, Modal, Image, StyleSheet, Platform, Alert } from 'react-native';
+import { View, FlatList, Modal, Image, StyleSheet, TouchableOpacity, Alert } from 'react-native';
 import * as ImagePicker from 'expo-image-picker';
 import { createDestination } from '../services/destinationService';
+import { Ionicons } from '@expo/vector-icons';
 
 import { Text, Button, TextInput } from '@/components/StyledComponents';
 
@@ -13,6 +14,7 @@ const Destinations = () => {
     const [modalVisible, setModalVisible] = useState(false);
     const [attractionName, setAttractionName] = useState('');
     const [attractionDescription, setAttractionDescription] = useState('');
+    const [attractionPlusCode, setAttractionPlusCode] = useState('');
     const [attractionPictures, setAttractionPictures] = useState([]);
 
     const getPermissionAsync = async () => {
@@ -23,32 +25,28 @@ const Destinations = () => {
         }
         return true;
     };
-    
+
     const pickImage = async () => {
         console.log('Attempting to open image picker...');
-    
-        // Ensure permissions are granted
+
         const permissionResult = await ImagePicker.requestMediaLibraryPermissionsAsync();
         if (permissionResult.status !== 'granted') {
             Alert.alert("Permission required", "Camera roll access is needed to select images.");
             return;
         }
-    
-        // Launch the image picker
+
         let result = await ImagePicker.launchImageLibraryAsync({
             mediaTypes: ImagePicker.MediaTypeOptions.Images,
             allowsMultipleSelection: true,
             quality: 1,
             base64: true,
         });
-    
-        // Check if the operation was cancelled
+
         if (result.cancelled) {
             console.log('Image picker was cancelled');
             return;
         }
-    
-        // Handle selected images
+
         if (result.assets && result.assets.length > 0) {
             console.log(`Selected ${result.assets.length} images`);
             const newPictures = result.assets.map(asset => asset.base64);
@@ -66,6 +64,10 @@ const Destinations = () => {
             Alert.alert("Error", "Please enter a description for the attraction.");
             return;
         }
+        if (!attractionPlusCode.trim()) {
+            Alert.alert("Error", "Please enter the plus code for the attraction.");
+            return;
+        }
         if (attractionPictures.length < 10) {
             Alert.alert("Error", "Please add at least 10 images of the landmark.");
             return;
@@ -76,12 +78,14 @@ const Destinations = () => {
             {
                 name: attractionName,
                 description: attractionDescription,
+                plusCode: attractionPlusCode,
                 pictures: attractionPictures,
             },
         ]);
         setModalVisible(false);
         setAttractionName('');
         setAttractionDescription('');
+        setAttractionPlusCode('');
         setAttractionPictures([]);
     };
 
@@ -143,6 +147,11 @@ const Destinations = () => {
 
             <Modal animationType="slide" transparent={false} visible={modalVisible}>
                 <View style={styles.modalContainer}>
+                    <View style={styles.modalHeader}>
+                        <TouchableOpacity onPress={() => setModalVisible(false)} style={styles.closeButton}>
+                            <Ionicons name="close" size={24} color="black" />
+                        </TouchableOpacity>
+                    </View>
                     <TextInput
                         placeholder="Attraction Name"
                         value={attractionName}
@@ -156,7 +165,18 @@ const Destinations = () => {
                         style={styles.input}
                         multiline
                     />
-                    <Button title="Pick an image from camera roll" onPress={pickImage} />
+                    <TextInput
+                        placeholder="Attraction Plus Code"
+                        value={attractionPlusCode}
+                        onChangeText={setAttractionPlusCode}
+                        style={styles.input}
+                        multiline
+                    />
+                    <Button
+                        title="Pick at least 10 images"
+                        onPress={pickImage}
+                        iconName="images-outline"
+                    />
                     <FlatList
                         data={attractionPictures}
                         keyExtractor={(item, index) => index.toString()}
@@ -165,7 +185,6 @@ const Destinations = () => {
                         )}
                     />
                     <Button title="Add Attraction" onPress={addAttraction} />
-                    <Button title="Close Modal" onPress={() => setModalVisible(false)} />
                 </View>
             </Modal>
         </View>
@@ -201,6 +220,15 @@ const styles = StyleSheet.create({
         padding: 10,
         borderBottomWidth: 1,
         borderBottomColor: '#ccc'
+    },
+    modalHeader: {
+        flexDirection: 'row',
+        justifyContent: 'flex-end',
+        alignItems: 'center',
+        marginBottom: 20,        
+    },
+    closeButton: {
+        padding: 10,
     },
 });
 
