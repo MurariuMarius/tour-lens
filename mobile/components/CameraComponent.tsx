@@ -6,6 +6,7 @@ import { Ionicons } from '@expo/vector-icons';
 import { predict } from '@/services/predictionService';
 
 import { Text, Button } from "@/components/StyledComponents";
+import { useMessageModal } from "@/components/MessageModal";
 
 import { minimumPredictionConfidence } from "@/config";
 
@@ -16,6 +17,7 @@ export default function CameraComponent({ onClose, modelId, attractions, onAttra
   const [attraction, setAttraction] = useState(null);
   const cameraRef = useRef(null);
 
+  const { showModal } = useMessageModal();
 
   const uploadImage = async () => {
     if (capturedPhoto && capturedPhoto.uri) {
@@ -32,7 +34,7 @@ export default function CameraComponent({ onClose, modelId, attractions, onAttra
         if (parseFloat(prediction.confidence) >= minimumPredictionConfidence) {
           setAttraction(attraction)
         } else {
-          Alert.alert("No attraction identified", "The picture might not contain a supported landmark. Please try again.")
+          showModal("No attraction identified 📸", "The picture might not contain a supported landmark.\nPlease try again.", 3000)
         }
       } catch (error) {
         Alert.alert("Error", error.message);
