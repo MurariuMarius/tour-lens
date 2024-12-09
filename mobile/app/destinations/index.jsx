@@ -3,7 +3,7 @@ import { StyleSheet, View, FlatList, ImageBackground, TouchableOpacity, Activity
 import { Link } from 'expo-router';
 
 import getUriFromBase64 from '@/utils/getUriFromBase64';
-import { useDestinations } from '../../contexts/DestinationContext';
+import { useDestinations } from '@/contexts/DestinationContext';
 
 import { Text } from "@/components/StyledComponents";
 
@@ -20,21 +20,17 @@ export default function DestinationList() {
 
   destinations.forEach(d => console.log(d.id));
 
-  const renderItem = ({ item }) => {
-    return (
-      <TouchableOpacity style={styles.card}>
-        <Link href={`/destinations/${item.id}`}>
-          <View style={{ flex: 1 }}>
-            <ImageBackground source={{ uri: getUriFromBase64(item.picture) }} style={styles.cardImage}>
-              <View style={styles.cardOverlay}>
-                <Text style={styles.cardTitle}>{item.name}</Text>
-              </View>
-            </ImageBackground>
+  const renderItem = ({ item }) => (
+    <TouchableOpacity style={styles.itemContainer}>
+      <Link href={`/destinations/${item.id}`}>
+        <ImageBackground source={{ uri: getUriFromBase64(item.picture) }} style={styles.imageBackground}>
+          <View style={styles.overlay}>
+            <Text style={styles.destinationName}>{item.name}</Text>
           </View>
-        </Link>
-      </TouchableOpacity>
-    )
-  };
+        </ImageBackground>
+      </Link>
+    </TouchableOpacity>
+  );
 
   if (isLoading) {
     return (
@@ -51,37 +47,51 @@ export default function DestinationList() {
         renderItem={renderItem}
         keyExtractor={(item) => item.id}
         contentContainerStyle={styles.listContent}
+        showsVerticalScrollIndicator={false}
       />
     </View>
   );
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-  },
-  card: {
-    height: 200,
-    marginBottom: 15,
-    borderRadius: 10,
-    overflow: 'hidden',
-  },
-  cardImage: {
-    flex: 1,
-    justifyContent: 'flex-end',
-  },
-  cardOverlay: {
-    backgroundColor: 'rgba(0,0,0,0.5)',
-    padding: 10,
-  },
-  cardTitle: {
-    color: '#fff',
-    fontSize: 24,
-    fontWeight: 'bold',
-  },
   loadingContainer: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
+    backgroundColor: '#F5FCFF',
+  },
+
+  listContent: {
+    padding: 15,
+  },
+
+  itemContainer: {
+    marginBottom: 15,
+    borderRadius: 8,
+    overflow: 'hidden',
+  },
+
+  imageBackground: {
+    width: '100%',
+    height: 350,
+    justifyContent: 'flex-end',
+  },
+
+  overlay: {
+    padding: 10,
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+  },
+
+  destinationName: {
+    color: 'white',
+    fontSize: 35,
+    fontWeight: 'bold',
+    fontFamily: 'Montserrat_900Black',
+  },
+  headerText: {
+    fontSize: 50,
+    fontWeight: 'bold',
+    color: 'blue',
+    marginBottom: 20,
   },
 });
