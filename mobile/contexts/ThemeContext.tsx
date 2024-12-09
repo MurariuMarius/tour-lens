@@ -15,7 +15,7 @@ type ThemeContextType = {
 };
 
 const ThemeContext = createContext<ThemeContextType>({
-  textStyle: { fontFamily: 'Montserrat_900Black' },
+  textStyle: { fontFamily: 'Montserrat_600SemiBold' },
 });
 
 export const useTheme = () => useContext(ThemeContext);

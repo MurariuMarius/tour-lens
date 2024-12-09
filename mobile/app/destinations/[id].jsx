@@ -87,13 +87,13 @@ export default function DestinationDetails() {
             </View>
           </ImageBackground>
           <ScrollView style={styles.modalContent}>
-            <View style={styles.descriptionContainer}> {/* Added container for description */}
+            <View style={styles.descriptionContainer}>
               <Text style={styles.modalDescription}>{selectedAttraction?.description}</Text>
             </View>
             <TouchableOpacity onPress={() => openPlusCodeInMaps(selectedAttraction?.plusCode)}>
               <View style={styles.mapOverlay}>
-                <View style={styles.mapTextButton}> {/* Added a container for icon and text */}
-                  <Ionicons name="navigate-outline" size={20} color="white" style={styles.mapIcon} /> {/* Added Google Maps Icon */}
+                <View style={styles.mapTextButton}>
+                  <Ionicons name="navigate-outline" size={20} color="white" style={styles.mapIcon} />
                   <Text style={styles.mapText}>Open in Google Maps</Text>
                 </View>
               </View>
