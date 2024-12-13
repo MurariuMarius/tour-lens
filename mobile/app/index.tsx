@@ -12,7 +12,7 @@ export default function Home() {
         justifyContent: "center",
         alignItems: "center",
         gap: 15,
-        
+        backgroundColor: "#eccdfa",
       }}
     >
       <Text style={styles.title}>tour-lens</Text>

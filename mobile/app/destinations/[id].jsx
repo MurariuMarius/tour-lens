@@ -57,8 +57,12 @@ export default function DestinationDetails() {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.destinationName}>{destination.name}</Text>
-      <Text style={styles.destinationDescription}>{destination.description}</Text>
+      <View style={styles.titleContainer}>
+        <Text style={styles.destinationName}>{destination.name}</Text>
+      </View>
+      <View style={styles.descriptionCard}>
+        <Text style={styles.destinationDescription}>{destination.description}</Text>
+      </View>
       <FlatList
         data={destination.attractions}
         renderItem={renderAttraction}
@@ -104,9 +108,7 @@ export default function DestinationDetails() {
           </TouchableOpacity>
         </View>
       </Modal>
-
     </View>
-
   );
 }
 
@@ -115,15 +117,30 @@ const styles = StyleSheet.create({
     flex: 1,
     padding: 10,
   },
+  titleContainer: {
+    alignItems: 'center',
+    marginBottom: 10,
+  },
   listContent: {
     padding: 10,
     paddingBottom: 80,
   },
   descriptionContainer: {
-    backgroundColor: '#f0f0f0', // Light grey background
+    backgroundColor: '#cec4fc',
     padding: 20,
     borderRadius: 15,
     marginBottom: 10,
+  },
+  descriptionCard: {
+    backgroundColor: '#cec4fc',
+    padding: 15,
+    borderRadius: 10,
+    marginBottom: 20,
+    elevation: 2,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
   },
   fixedButton: {
     position: 'absolute',
@@ -132,7 +149,7 @@ const styles = StyleSheet.create({
     right: 20,
     borderRadius: 10,
     elevation: 5,
-    backgroundColor: '#f0f0f0',
+    backgroundColor: '#8B5CF6',
     shadowColor: 'black',
     shadowOffset: { width: 0, height: -2 },
     shadowOpacity: 0.3,
@@ -146,21 +163,20 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   buttonIcon: {
-    color: 'black',
+    color: 'white',
     marginRight: 10,
   },
   buttonText: {
-    color: 'black',
+    color: 'white',
     fontWeight: 'bold',
   },
   destinationName: {
-    fontSize: 28,
-    fontWeight: 'bold',
-    marginBottom: 10,
+    fontSize: 32,
+    textAlign: 'center',
+    fontFamily: "Montserrat_900Black",
   },
   destinationDescription: {
     fontSize: 16,
-    marginBottom: 20,
   },
   list: {
     paddingBottom: 20,
@@ -169,8 +185,8 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   modalImage: {
-    height: 300, // Set a fixed height or adjust as needed
-    justifyContent: 'flex-end', // Align title to bottom
+    height: 300,
+    justifyContent: 'flex-end',
     resizeMode: 'cover'
   },
   modalImageOverlay: {
@@ -184,28 +200,28 @@ const styles = StyleSheet.create({
   },
   modalContent: {
     padding: 20,
-    flex: 1, // Allow description to take remaining space
+    flex: 1,
   },
-  mapPreviewImage: { // Style for the ImageBackground *inside* the View
+  mapPreviewImage: {
     width: '100%',
     height: '100%',
-    resizeMode: 'cover', // Ensures image covers the entire View
+    resizeMode: 'cover',
   },
   mapOverlay: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    backgroundColor: '#8B5CF6',
     borderRadius: 15,
     padding: 7,
+    marginTop: 10,
   },
-  mapTextButton: { // Container for the icon and text to align them
+  mapTextButton: {
     flexDirection: 'row',
     alignItems: 'center',
-
   },
   mapIcon: {
-    marginRight: 10, // Space between icon and text
+    marginRight: 10,
   },
   mapText: {
     color: 'white',
