@@ -171,7 +171,7 @@ def get_model(images, labels, output_dir):
         output_dir=output_dir,
         per_device_train_batch_size=16,
         evaluation_strategy="steps",
-        num_train_epochs=4,
+        num_train_epochs=15,
         fp16=False,
         save_steps=100,
         eval_steps=100,
@@ -200,6 +200,11 @@ def train(trainer):
         trainer.save_model()
         trainer.log_metrics("train", train_results.metrics)
         trainer.save_metrics("train", train_results.metrics)
+        
+        validation_results = trainer.evaluate()
+        trainer.log_metrics("validation", validation_results)
+        trainer.save_metrics("validation", validation_results)
+        
         trainer.save_state()
         
     except Exception as e:
@@ -219,8 +224,8 @@ def getModelPath(model_id : int) -> str:
 
 
 def _clean_model_directory(directory):
-    filename_to_keep = f"{directory}/model.safetensors"
-
+    filename_to_keep = os.path.join(directory, "model.safetensors")    
+    
     for item in os.listdir(directory):
         item_path = os.path.join(directory, item)
         
