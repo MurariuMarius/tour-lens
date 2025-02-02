@@ -1,38 +1,20 @@
 import React, { useState } from "react";
 import { TouchableOpacity, View, Alert } from "react-native";
-import { auth } from "../firebaseConfig"; 
-import { signInWithEmailAndPassword } from "firebase/auth"; 
-import { Link } from "expo-router";
+import { Link, useRouter } from "expo-router";
 
 import { Text, TextInput } from "@/components/StyledComponents";
+import { login } from "@/services/authService";
 
 export default function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
+  const router = useRouter();
+
   const handleLogin = async () => {
     try {
-      const userCredential = await signInWithEmailAndPassword(auth, email, password);
-      const user = userCredential.user;
-
-      
-      const usersCollection = collection(db, "users"); 
-      const q = query(usersCollection, where("email", "==", user.email));
-      const querySnapshot = await getDocs(q);
-
-      if (!querySnapshot.empty) {
-        const userData = querySnapshot.docs[0].data(); 
-        console.log("User Data from Firestore:", userData);
-        router.push({ pathname: "/profile", params: { userData } });
-
-      } else {
-        console.log("No user found in Firestore with this email.");
-        
-        
-      }
-
-
-
+      await login(email, password);
+      router.push({ pathname: "/" });
     } catch (error) {
       Alert.alert("Login Failed", error.message);
     }
