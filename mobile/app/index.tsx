@@ -9,6 +9,8 @@ import { getUser, isUserLoggedIn, logoutUser } from "@/services/authService";
 import { useDestinations } from '@/contexts/DestinationContext';
 import { getDestinations, getDestinationsNearMe } from "@/services/destinationService";
 
+import { getLocation } from "@/services/locationService";
+
 export default function Home() {
   const [modalVisible, setModalVisible] = useState(false);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -217,15 +219,15 @@ const styles = StyleSheet.create({
   welcomeText: {
     color: "white",
     fontFamily: "Montserrat_900Black",
-    fontSize: 22,
+    fontSize: 26,
     opacity: 0.9,
   },
   emojiText: {
-    fontSize: 22,
+    fontSize: 26,
   }, 
   nameText: {
     color: "white",
     fontFamily: "Montserrat_900Black",
-    fontSize: 22,
+    fontSize: 26,
   },
 });
