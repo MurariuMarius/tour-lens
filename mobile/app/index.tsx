@@ -1,15 +1,22 @@
 import React, { useState, useEffect } from "react";
 import { View, StyleSheet, Modal, TouchableOpacity, Pressable } from "react-native";
-import { Link } from "expo-router";
+import { Link, useRouter } from "expo-router";
 import { Ionicons } from "@expo/vector-icons";
 import { Text, Button } from "@/components/StyledComponents";
 
 import { getUser, isUserLoggedIn, logoutUser } from "@/services/authService";
 
+import { useDestinations } from '@/contexts/DestinationContext';
+import { getDestinations, getDestinationsNearMe } from "@/services/destinationService";
+
 export default function Home() {
   const [modalVisible, setModalVisible] = useState(false);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [userData, setUserData] = useState();
+
+  const { refresh } = useDestinations();
+
+  const router = useRouter();
 
   useEffect(() => {
     checkLoginStatus();
@@ -33,6 +40,15 @@ export default function Home() {
     setModalVisible(false);
     setIsLoggedIn(false);
     setUserData(undefined);
+  };
+
+  const handleNavigateWithStrategy = (strategy: Function, title?: String) => {
+    refresh(strategy);
+    if (title) {
+      router.push(`/destinations?headerText=${title}`);
+    } else {
+      router.push("/destinations");
+    }
   };
 
   console.log(userData);
@@ -75,9 +91,13 @@ export default function Home() {
           </Link>
         )}
         
-        <Link href="/destinations" asChild>
-          <Button style={styles.button} title="View Destinations" />
-        </Link>
+        <TouchableOpacity >
+          <Button style={styles.button} title="View Destinations" onPress={() => handleNavigateWithStrategy(getDestinations)}/>
+        </TouchableOpacity>
+
+        <TouchableOpacity>
+          <Button style={styles.button} title="Near Me" onPress={() => handleNavigateWithStrategy(getDestinationsNearMe, "Near Me")}/>
+        </TouchableOpacity>
       </View>
 
       {isLoggedIn && (

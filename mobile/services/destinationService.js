@@ -24,7 +24,14 @@ const getDestinations = async () => {
     return destinations;
 };
 
+// TODO
+const getDestinationsNearMe = async () => {
+    const destinations = await getDestinations();
+    return destinations;
+};
+
 export {
     createDestination,
     getDestinations,
+    getDestinationsNearMe,
 };

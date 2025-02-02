@@ -5,9 +5,13 @@ import { Link } from 'expo-router';
 import { useDestinations } from '@/contexts/DestinationContext';
 
 import { Text } from "@/components/StyledComponents";
+import { useSearchParams } from 'expo-router/build/hooks';
 
 export default function DestinationList() {
   const { destinations, isLoading, error, refresh } = useDestinations();
+
+  const searchParams = useSearchParams();
+  const headerText = searchParams.get('headerText') || "Destinations";
 
   useEffect(() => {
     refresh();
@@ -39,6 +43,9 @@ export default function DestinationList() {
 
   return (
     <View style={styles.container}>
+      <View style={styles.titleContainer}>
+        <Text style={styles.headerText}>{headerText}</Text>
+      </View>      
       <FlatList
         data={destinations}
         renderItem={renderItem}
@@ -85,10 +92,19 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     fontFamily: 'Montserrat_900Black',
   },
+  titleContainer: {
+    backgroundColor: '#cec4fc',
+    padding: 20,
+    borderRadius: 15,
+    marginBottom: 10,
+    marginLeft: 15,
+    marginRight: 15,
+    marginTop: 5,
+
+  },
   headerText: {
-    fontSize: 50,
-    fontWeight: 'bold',
-    color: 'blue',
-    marginBottom: 20,
+    fontSize: 32,
+    textAlign: 'center',
+    fontFamily: "Montserrat_900Black",
   },
 });

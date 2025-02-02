@@ -1,5 +1,4 @@
 import React, { createContext, useState, useEffect, useContext, useCallback } from 'react';
-import { getDestinations } from "@/services/destinationService";
 
 import { ref, getDownloadURL } from 'firebase/storage';
 import { storage } from '@/firebaseConfig';
@@ -8,7 +7,7 @@ const DestinationsContext = createContext({
   destinations: [],
   isLoading: true,
   error: null,
-  refresh: () => {},
+  refresh: (fetchStrategy) => {},
 });
 
 export const useDestinations = () => useContext(DestinationsContext);
@@ -47,10 +46,10 @@ export const DestinationsProvider = ({ children }) => {
     }
   };
 
-  const fetchData = useCallback(async () => {
+  const fetchData = useCallback(async (fetchStartegy) => {
     setIsLoading(true);
     try {
-      const data = await getDestinations();
+      const data = await fetchStartegy();
       const destinations = await processDestinations(data);
       setDestinations(destinations);
       setIsLoading(false);
@@ -64,11 +63,13 @@ export const DestinationsProvider = ({ children }) => {
   }, []);
 
   useEffect(() => {
-    fetchData();
-  }, [fetchData]);
+    setIsLoading(true);
+  }, []);
 
-  const refresh = useCallback(() => {
-    fetchData();
+  const refresh = useCallback((fetchStartegy) => {
+    if (fetchStartegy) {
+      fetchData(fetchStartegy);
+    }
   }, [fetchData]);
 
   const value = { destinations, isLoading, error, refresh };
