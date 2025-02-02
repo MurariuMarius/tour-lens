@@ -1,4 +1,4 @@
-const ROOT_URL = "https://tour-lens-ml-455665426558.us-central1.run.app";
+const ROOT_URL = "https://tour-lens-ml-455665426558.europe-west4.run.app";
 
 const predict = async (image, modelId) => {
   try {

@@ -2,7 +2,7 @@ import { getFunctions, httpsCallable } from 'firebase/functions'
 import { collection, getDocs } from "firebase/firestore"; 
 import { db } from '../firebaseConfig';
 
-const createDestination = async (destination) => {
+const createDestination = (destination) => {
     try {
         const destinationData = {
             destination: destination
@@ -11,9 +11,7 @@ const createDestination = async (destination) => {
         const functions = getFunctions();
         const createDestination = httpsCallable(functions, 'createDestination');
 
-        const responseData = await createDestination(destinationData);
-        console.log('Response:', responseData);
-
+        createDestination(destinationData);
     } catch (error) {
         console.error('Error sending data:', error);
     }

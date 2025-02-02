@@ -5,8 +5,6 @@ import { useDestinations } from '@/contexts/DestinationContext';
 import { Linking, Modal, StyleSheet, View, FlatList, ImageBackground, TouchableOpacity, ScrollView } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 
-import getUriFromBase64 from '@/utils/getUriFromBase64';
-
 import CameraComponent from '@/components/CameraComponent';
 import { Text } from "@/components/StyledComponents";
 
@@ -39,7 +37,7 @@ export default function DestinationDetails() {
   const renderAttraction = ({ item }) => (
     <TouchableOpacity onPress={() => setSelectedAttraction(item)}>
       <View style={styles.attractionCard}>
-        <ImageBackground source={{ uri: getUriFromBase64(item.picture) }} style={styles.attractionImage}>
+        <ImageBackground source={{ uri: item.picture }} style={styles.attractionImage}>
           <View style={styles.attractionOverlay}>
             <Text style={styles.attractionTitle}>{item.name}</Text>
           </View>
@@ -85,7 +83,7 @@ export default function DestinationDetails() {
       </Modal>
       <Modal visible={selectedAttraction !== null} animationType="slide" onRequestClose={() => setSelectedAttraction(null)}>
         <View style={styles.modalContainer}>
-          <ImageBackground source={{ uri: getUriFromBase64(selectedAttraction?.picture) }} style={styles.modalImage}>
+          <ImageBackground source={{ uri: selectedAttraction?.picture }} style={styles.modalImage}>
             <View style={styles.modalImageOverlay}>
               <Text style={styles.modalImageTitle}>{selectedAttraction?.name}</Text>
             </View>

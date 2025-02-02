@@ -6,7 +6,9 @@ admin.initializeApp({
 });
  
 const firestoreService = admin.firestore();
+const bucket = admin.storage().bucket("tour-lens.firebasestorage.app");
 
 module.exports = {
-    firestoreService
+    firestoreService,
+    bucket
 };

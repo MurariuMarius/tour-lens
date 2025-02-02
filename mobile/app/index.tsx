@@ -12,7 +12,7 @@ export default function Home() {
         justifyContent: "center",
         alignItems: "center",
         gap: 15,
-        backgroundColor: "#eccdfa",
+        backgroundColor: "#B0A8FE",
       }}
     >
       <Text style={styles.title}>tour-lens</Text>
@@ -37,5 +37,6 @@ const styles = StyleSheet.create({
     fontFamily: "Montserrat_900Black",
     fontSize: 50,
     marginBottom: 70,
+    color: "white",
   }
 });
