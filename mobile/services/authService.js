@@ -52,6 +52,11 @@ export const isUserLoggedIn = async () => {
   }
 };
 
+export const getUser = async () => {
+  const user = await AsyncStorage.getItem("user");
+  return JSON.parse(user);
+};
+
 export const logoutUser = async () => {
   try {
     await AsyncStorage.removeItem("user");
@@ -62,4 +67,9 @@ export const logoutUser = async () => {
   } catch (error) {
     console.error("Error logging out the user:", error);
   }
+};
+
+export const isAdmin = async () => {
+  const user = await getUser();
+  return user.isAdmin;
 };

@@ -51,12 +51,20 @@ export default function Register() {
     }
 
     try {
-      await register(name, email, password)
+      await register(name, email, password);
+      clearFields();
       router.push({ pathname: "/" });
       Alert.alert("Registration Successful");
     } catch (error) {
       Alert.alert("Registration Failed", error.message);
     }
+  };
+
+  const clearFields = () => {
+    setName("");
+    setEmail("");
+    setPassword("");
+    setConfirmPassword("");
   };
 
   return (

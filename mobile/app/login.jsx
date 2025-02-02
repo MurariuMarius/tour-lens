@@ -14,10 +14,16 @@ export default function Login() {
   const handleLogin = async () => {
     try {
       await login(email, password);
+      clearFields();
       router.push({ pathname: "/" });
     } catch (error) {
       Alert.alert("Login Failed", error.message);
     }
+  };
+
+  const clearFields = () => {
+    setPassword("");
+    setEmail("");
   };
 
   return (
