@@ -21,6 +21,14 @@ export default function DestinationList() {
     return <Text>Error: {error}</Text>;
   }
 
+  if (isLoading) {
+    return (
+      <View style={styles.loadingContainer}>
+        <ActivityIndicator size="large" color="#0000ff" />
+      </View>
+    );
+  }
+
   const renderItem = ({ item }) => (
     <TouchableOpacity style={styles.itemContainer}>
       <Link href={`/destinations/${item.id}`}>
@@ -33,74 +41,63 @@ export default function DestinationList() {
     </TouchableOpacity>
   );
 
-  if (isLoading) {
-    return (
-      <View style={styles.loadingContainer}>
-        <ActivityIndicator size="large" color="#0000ff" />
-      </View>
-    );
-  }
+  const ListHeader = () => (
+    <View style={styles.titleContainer}>
+      <Text style={styles.headerText}>{headerText}</Text>
+    </View>
+  );
 
   return (
-    <View style={styles.container}>
-      <View style={styles.titleContainer}>
-        <Text style={styles.headerText}>{headerText}</Text>
-      </View>      
-      <FlatList
-        data={destinations}
-        renderItem={renderItem}
-        keyExtractor={(item) => item.id}
-        contentContainerStyle={styles.listContent}
-        showsVerticalScrollIndicator={false}
-      />
-    </View>
+    <FlatList
+      data={destinations}
+      renderItem={renderItem}
+      keyExtractor={(item) => item.id}
+      contentContainerStyle={styles.listContent}
+      showsVerticalScrollIndicator={false}
+      ListHeaderComponent={ListHeader}
+      style={styles.container}
+    />
   );
 }
 
 const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+  },
   loadingContainer: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
     backgroundColor: '#F5FCFF',
   },
-
   listContent: {
     padding: 15,
+    paddingBottom: 30,
   },
-
   itemContainer: {
     marginBottom: 15,
     borderRadius: 8,
     overflow: 'hidden',
   },
-
   imageBackground: {
     width: '100%',
     height: 350,
     justifyContent: 'flex-end',
   },
-
   overlay: {
     padding: 10,
     backgroundColor: 'rgba(0, 0, 0, 0.5)',
   },
-
   destinationName: {
     color: 'white',
     fontSize: 35,
-    fontWeight: 'bold',
-    fontFamily: 'Montserrat_900Black',
+    fontFamily: 'Montserrat_600SemiBold',
   },
   titleContainer: {
     backgroundColor: '#cec4fc',
     padding: 20,
     borderRadius: 15,
     marginBottom: 10,
-    marginLeft: 15,
-    marginRight: 15,
-    marginTop: 5,
-
   },
   headerText: {
     fontSize: 32,

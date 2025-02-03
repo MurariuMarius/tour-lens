@@ -19,8 +19,6 @@ export default function DestinationDetails() {
 
   const destination = destinations.find(destination => destination.id === id);
 
-  console.log(destination.modelId);
-
   if (!destination) {
     return (
       <View style={styles.container}>
@@ -34,37 +32,48 @@ export default function DestinationDetails() {
     setCameraVisible(false);
   };
 
-  const renderAttraction = ({ item }) => (
-    <TouchableOpacity onPress={() => setSelectedAttraction(item)}>
-      <View style={styles.attractionCard}>
-        <ImageBackground source={{ uri: item.picture }} style={styles.attractionImage}>
-          <View style={styles.attractionOverlay}>
-            <Text style={styles.attractionTitle}>{item.name}</Text>
-          </View>
-        </ImageBackground>
-      </View>
-    </TouchableOpacity>
-  );
+  const renderAttraction = ({ item }) => {
+    if (item.isDescription) {
+      return (
+        <View style={styles.descriptionCard}>
+          <Text style={styles.destinationDescription}>{item.description}</Text>
+        </View>
+      );
+    }
+
+    return (
+      <TouchableOpacity onPress={() => setSelectedAttraction(item)}>
+        <View style={styles.attractionCard}>
+          <ImageBackground source={{ uri: item.picture }} style={styles.attractionImage}>
+            <View style={styles.attractionOverlay}>
+              <Text style={styles.attractionTitle}>{item.name}</Text>
+            </View>
+          </ImageBackground>
+        </View>
+      </TouchableOpacity>
+    );
+  };
 
   const openPlusCodeInMaps = (plusCode) => {
-    plusCode = plusCode.replace("+", "%2B")
+    plusCode = plusCode.replace("+", "%2B");
     const url = `https://www.google.com/maps/search/?api=1&query=${plusCode}`;
     Linking.openURL(url);
   };
 
+  const listData = [
+    { isDescription: true, description: destination.description },
+    ...destination.attractions
+  ];
 
   return (
     <View style={styles.container}>
       <View style={styles.titleContainer}>
         <Text style={styles.destinationName}>{destination.name}</Text>
       </View>
-      <View style={styles.descriptionCard}>
-        <Text style={styles.destinationDescription}>{destination.description}</Text>
-      </View>
       <FlatList
-        data={destination.attractions}
+        data={listData}
         renderItem={renderAttraction}
-        keyExtractor={(item) => item.label}
+        keyExtractor={(item, index) => item.isDescription ? 'description' : item.label}
         contentContainerStyle={styles.list}
       />
       <TouchableOpacity style={styles.fixedButton} onPress={() => setCameraVisible(true)}>
@@ -177,7 +186,7 @@ const styles = StyleSheet.create({
     fontSize: 16,
   },
   list: {
-    paddingBottom: 20,
+    paddingBottom: 80,
   },
   modalContainer: {
     flex: 1,
